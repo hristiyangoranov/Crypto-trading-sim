@@ -95,7 +95,7 @@ function App() {
 
 
 
-  function BuyButton(buysell) {
+  function TradeButton(buysell) {
     const [showInputs, setShowInputs] = useState(false);
     const [values, setValues] = useState({ first: "", second: "" });
   
@@ -141,8 +141,12 @@ function App() {
         })
       };
 
-      const res = await fetch(`http://localhost:8080/api/${buysell}`, options)
-
+      const response = await fetch(`http://localhost:8080/api/${buysell}`, options)
+      
+      const result=await response.text()
+      if(!response.ok){
+        alert(result);
+      }
       fetchData();
     };
   
@@ -403,8 +407,8 @@ function App() {
           flexWrap: 'wrap',
           justifyContent: 'center'
         }}>
-          {BuyButton("buy")}
-          {BuyButton("sell")}
+          {TradeButton("buy")}
+          {TradeButton("sell")}
         </Box>
 
         <Grid container spacing={4}>

@@ -2,6 +2,7 @@ package com.crypto_trading_sim.crypto;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     
     @PostMapping("/buy")
-    public double buy(@RequestBody Req request){
-        Service.BuyCrypto(request.symbol, request.currprice, request.amount);
-        return Service.getBalance();
+    public ResponseEntity<String> buy(@RequestBody Req request){
+        return Service.BuyCrypto(request.symbol, request.currprice, request.amount);
     }
 
     @PostMapping("/sell")
-    public void sell(@RequestBody Req request){
-        Service.SellCrypto(request.symbol, request.currprice, request.amount);
+    public ResponseEntity<String> sell(@RequestBody Req request){
+        return Service.SellCrypto(request.symbol, request.currprice, request.amount);
     }
 
     @GetMapping("/getBalance")
