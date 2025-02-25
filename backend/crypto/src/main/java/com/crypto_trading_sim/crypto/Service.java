@@ -11,7 +11,7 @@ public class Service {
 
     public static void BuyCrypto(String symbol, double currprice, double amount){
         if(balance>=amount*currprice){
-            Transaction tempTransacion=new Transaction(symbol,true, currprice*amount, amount, 0);
+            Transaction tempTransacion=new Transaction(symbol,true, amount, 0);
             transactions.addLast(tempTransacion);
         
             //check if user already has the given crypto
@@ -25,7 +25,7 @@ public class Service {
             }
 
             if(!alreadyBought){
-                Holding tempHolding = new Holding(symbol, amount);
+                Holding tempHolding = new Holding(symbol, amount, currprice);
                 holdings.addLast(tempHolding);
             }
 
@@ -39,7 +39,7 @@ public class Service {
         //check if the user has the crypto
         for (Holding holding : holdings) {
             if(holding.getAmount()>=amount){
-                Transaction tempTransacion=new Transaction(symbol, false, currprice, amount, );
+                Transaction tempTransacion=new Transaction(symbol, false, amount,  (currprice-holding.getBoughtFor())*amount);
                 transactions.addLast(tempTransacion);
 
                 //update balance

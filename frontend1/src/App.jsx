@@ -122,8 +122,7 @@ function App() {
         },
         body: JSON.stringify({
           symbol: values.first,
-          buysell:false,
-          price: cryptoprice, 
+          currprice: cryptoprice, 
           amount: parseFloat(values.second)
         })
       };
@@ -180,7 +179,7 @@ function App() {
     }
   }
 
-  function TransactionCard (symbol, buysell, amount, price){
+  function TransactionCard (symbol, buysell, amount, profit){
     return (
     <>
     <Box sx={{
@@ -194,11 +193,31 @@ function App() {
         <Typography color='black' variant="h3">{symbol}</Typography>
         <Typography color='black' variant="h5">{buysell==true?"buy":"sell"}</Typography>
         <Typography color='black' variant="h5">{amount}</Typography>
-        {buysell==false ? (price>=getCurrPriceOfCrypto(symbol)? <Typography color='green' variant="h5">{((getCurrPriceOfCrypto(symbol)-price)*amount).toFixed(2)}</Typography>: <Typography color='red' variant="h5">{((getCurrPriceOfCrypto(symbol)-price)*amount).toFixed(2)}</Typography>):<Typography></Typography>}
+        {buysell==false ? (profit>0 ? <Typography color='green'>{profit}</Typography> : <Typography color='red'>{profit}</Typography>):<Typography></Typography>}
+    </Box>
+
+    </>)
+  }
+
+  function HoldingCard (symbol, amount, currprice){
+    return (
+    <>
+    <Box sx={{
+        width:250,
+        height:150,
+        marginY: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        background:"white"
+    }}>
+        <Typography color='black' variant="h3">{symbol}</Typography>
+        <Typography color='black' variant="h5">{amount}</Typography>
+        <Typography color='black' variant="h5">{currprice}</Typography>
     </Box>
 
     </>)
 }
+
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -230,11 +249,7 @@ function App() {
             Your Holdings
           </Typography>
           {holdings.map((val, index) => (
-            <CryptoBox
-              key={`holding-${val.symbol}-${index}`}  // Include index for uniqueness
-              argument1={val.symbol}
-              argument2={val.amount}
-            />
+            HoldingCard(val.symbol, val.amount, val.boughtFor)
           ))}
         </Grid>
   
@@ -244,7 +259,7 @@ function App() {
             Recent Transactions
           </Typography>
           {transactions.map((val, index) => (
-            TransactionCard(val.symbol,val.buysell, val.amount, val.price)
+            TransactionCard(val.symbol,val.buysell, val.amount, val.profit)
           ))}
         </Grid>
       </Grid>

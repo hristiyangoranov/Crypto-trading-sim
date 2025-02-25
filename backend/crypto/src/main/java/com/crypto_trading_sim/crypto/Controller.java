@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     
     @PostMapping("/buy")
-    public double buy(@RequestBody Transaction request){
-        Service.BuyCrypto(request.getSymbol(), request.getPrice(), request.getAmount());
+    public double buy(@RequestBody Req request){
+        Service.BuyCrypto(request.symbol, request.currprice, request.amount);
         return Service.getBalance();
     }
 
     @PostMapping("/sell")
-    public void sell(@RequestBody Transaction request){
-        Service.SellCrypto(request.getSymbol(), request.getPrice(), request.getAmount());
+    public void sell(@RequestBody Req request){
+        Service.SellCrypto(request.symbol, request.currprice, request.amount);
     }
 
     @GetMapping("/getBalance")
