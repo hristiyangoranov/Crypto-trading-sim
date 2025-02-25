@@ -5,9 +5,9 @@ import getHoldings from './getHoldings';
 import getTransactions from './getTransactions';
 import CryptoBox from './CryptoBox';
 import { Box, Grid, Typography, Button, TextField, Collapse, IconButton } from '@mui/material';
-import { ExpandMore, ExpandLess, AttachMoney, TrendingUp, AccountBalanceWallet } from '@mui/icons-material';
 import TransactionCard from './TransactionCard';
 import HoldingCard from './HoldingCard';
+import { ExpandMore, ExpandLess, AttachMoney, TrendingUp, TrendingDown, AccountBalanceWallet } from '@mui/icons-material';
 
 class Crypto{
   constructor(symbol, price){
@@ -125,9 +125,9 @@ function App() {
       }
       let cryptoprice;
       top20Cryptos.map((value)=>(value.symbol==values.first?cryptoprice=value.price:value))
-
+  
       console.log(cryptoprice);
-
+  
       const options = {
         method: 'POST',
         headers: { 
@@ -140,7 +140,7 @@ function App() {
           amount: parseFloat(values.second)
         })
       };
-
+  
       const response = await fetch(`http://localhost:8080/api/${buysell}`, options)
       
       const result=await response.text()
@@ -150,225 +150,97 @@ function App() {
       fetchData();
     };
   
-    return (
-      <div>
-        <button onClick={handleButtonClick}>
-          {showInputs ? 'Cancel' : `${buysell} Crypto`}
-        </button>
+    const buttonColor = buysell === "buy" ? "success" : "error";
+    const buttonIcon = buysell === "buy" ? <TrendingUp /> : <TrendingDown />;
   
-        {showInputs && (
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label>
-                Crypto symbol:
-                <input
-                  type="text"
-                  name="first"
-                  value={values.first}
-                  onChange={handleInputChange}
-                />
-              </label>
-            </div>
-            <div>
-              <label>
-                Amount:
-                <input
-                  type="text"
-                  name="second"
-                  value={values.second}
-                  onChange={handleInputChange}
-                />
-              </label>
-            </div>
-            <button  type="submit">Submit</button>
-          </form>
-        )}
-      </div>
+    return (
+      <Box sx={{ mb: 2 }}>
+        <Button
+          variant="contained"
+          color={buttonColor}
+          startIcon={buttonIcon}
+          onClick={handleButtonClick}
+          sx={{
+            borderRadius: '8px',
+            textTransform: 'capitalize',
+            fontWeight: 'bold',
+            px: 3,
+            py: 1,
+            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+            transition: 'all 0.3s',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
+            }
+          }}
+        >
+          {showInputs ? 'Cancel' : `${buysell} Crypto`}
+        </Button>
+  
+        <Collapse in={showInputs}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              mt: 2,
+              p: 3,
+              borderRadius: '12px',
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              boxShadow: '0 6px 16px rgba(0,0,0,0.1)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              border: '1px solid rgba(0,0,0,0.1)',
+            }}
+          >
+            <TextField
+              fullWidth
+              label="Crypto Symbol"
+              name="first"
+              value={values.first}
+              onChange={handleInputChange}
+              variant="outlined"
+              placeholder="e.g. BTC/USD"
+              InputProps={{
+                sx: { borderRadius: '8px' }
+              }}
+              required
+            />
+            
+            <TextField
+              fullWidth
+              label="Amount"
+              name="second"
+              value={values.second}
+              onChange={handleInputChange}
+              variant="outlined"
+              type="number"
+              InputProps={{
+                sx: { borderRadius: '8px' }
+              }}
+              required
+            />
+            
+            <Button
+              type="submit"
+              variant="contained"
+              color={buttonColor}
+              sx={{
+                mt: 1,
+                borderRadius: '8px',
+                py: 1.2,
+                fontWeight: 'bold',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+              }}
+            >
+              Submit Order
+            </Button>
+          </Box>
+        </Collapse>
+      </Box>
     );
   }
 
-  function getCurrPriceOfCrypto(symbol){
-    for (let index = 0; index < 20; index++) {
-      if(top20Cryptos[index]!=undefined&&top20Cryptos[index].symbol==symbol){
-        return top20Cryptos[index].price;
-      }
-    }
-  }
-
-  // function TransactionCard(symbol, buysell, amount, profit){
-  //     return (
-  //       <Box sx={{
-  //           background: 'linear-gradient(145deg, ghostwhite 0%, #f8f8ff 100%)',
-  //           height: 150,
-  //           width: 250,
-  //           borderRadius: '16px',
-  //           display: 'flex',
-  //           flexDirection: 'column',
-  //           alignItems: 'center',
-  //           justifyContent: 'center',
-  //           marginY: 3,
-  //           boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.12)',
-  //           border: '1px solid rgba(0, 0, 0, 0.05)',
-  //           transition: 'all 0.3s ease-in-out',
-  //           position: 'relative',
-  //           overflow: 'hidden',
-  //           '&:hover': {
-  //               transform: 'translateY(-4px)',
-  //               boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)'
-  //           },
-  //           '&::before': {
-  //               content: '""',
-  //               position: 'absolute',
-  //               top: 0,
-  //               left: 0,
-  //               right: 0,
-  //               height: '4px',
-  //               background: 'linear-gradient(90deg, #2196F3 0%, #21CBF3 100%)'
-  //           }
-  //       }}>
-  //           <Typography variant='h4' sx={{ 
-  //               color: 'black',
-  //               fontWeight: 700,
-  //               fontFamily: 'monospace',
-  //               mb: 0.5
-  //           }}>
-  //               {symbol}
-  //           </Typography>
-            
-  //           <Typography variant='subtitle2' sx={{ 
-  //               color: '#666',
-  //               fontWeight: 500,
-  //               mt: 1,
-  //               textTransform: 'uppercase'
-  //           }}>
-  //               {buysell==true?"buy":"sell"}
-  //           </Typography>
-  //           <Typography variant='h6' sx={{ 
-  //               color: "black",
-  //               fontWeight: 600,
-  //               fontFamily: 'monospace'
-  //           }}>
-  //               Amount: {amount}
-  //           </Typography>
-  //           <Typography variant='h6' sx={{ 
-  //               color: "black",
-  //               fontWeight: 600,
-  //               fontFamily: 'monospace'
-  //           }}>
-  //              {buysell==false ? (profit>0 ? <Typography color='green'>{profit.toFixed(2)}</Typography> : <Typography color='red'>{profit.toFixed(2)}</Typography>):<Typography></Typography>}
-  //           </Typography>
-  //       </Box>
-  //     );
-  // }
-
-
-
-  // function HoldingCard (symbol, amount, currprice){
-  //   return (
-  //     <Box sx={{
-  //         background: 'linear-gradient(145deg, ghostwhite 0%, #f8f8ff 100%)',
-  //         height: 150,
-  //         width: 250,
-  //         borderRadius: '16px',
-  //         display: 'flex',
-  //         flexDirection: 'column',
-  //         alignItems: 'center',
-  //         justifyContent: 'center',
-  //         marginY: 3,
-  //         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.12)',
-  //         border: '1px solid rgba(0, 0, 0, 0.05)',
-  //         transition: 'all 0.3s ease-in-out',
-  //         position: 'relative',
-  //         overflow: 'hidden',
-  //         '&:hover': {
-  //             transform: 'translateY(-4px)',
-  //             boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.15)'
-  //         },
-  //         '&::before': {
-  //             content: '""',
-  //             position: 'absolute',
-  //             top: 0,
-  //             left: 0,
-  //             right: 0,
-  //             height: '4px',
-  //             background: 'linear-gradient(90deg, #2196F3 0%, #21CBF3 100%)'
-  //         }
-  //     }}>
-  //         <Typography variant='h4' sx={{ 
-  //             color: 'black',
-  //             fontWeight: 700,
-  //             fontFamily: 'monospace',
-  //             mb: 0.5
-  //         }}>
-  //             {symbol}
-  //         </Typography>
-          
-  //         <Typography variant='subtitle2' sx={{ 
-  //             color: '#666',
-  //             fontWeight: 500,
-  //             mt: 1,
-  //             textTransform: 'uppercase'
-  //         }}>
-  //             Amount: {amount}
-  //         </Typography>
-  //         <Typography variant='h6' sx={{ 
-  //             color: "black",
-  //             fontWeight: 600,
-  //             fontFamily: 'monospace'
-  //         }}>
-  //             Bought at: {currprice}
-  //         </Typography>
-  //     </Box>
-  //   );
-//}
-
-
-  // return (
-  //   <Box sx={{ padding: 3 }}>
-  //     <Typography variant="h3" gutterBottom>
-  //       Your balance is ${balance.toFixed(2)}
-  //     </Typography>
-      
-  //     {BuyButton("buy")}
-  //     {BuyButton("sell")}
-  
-  //     <Grid container spacing={3}>
-  //       {/* Cryptocurrencies Column */}
-  //       <Grid item xs={12} md={4}>
-  //         <Typography variant="h5" gutterBottom>
-  //           Top 20 Cryptocurrencies
-  //         </Typography>
-  //         {top20Cryptos.map((val) => (
-  //           <CryptoBox
-  //             key={`crypto-${val.symbol}`}  // Unique key prefix
-  //             argument1={val.symbol}
-  //             argument2={val.price}
-  //           />
-  //         ))}
-  //       </Grid>
-  
-  //       {/* Holdings Column */}
-  //       <Grid item xs={12} md={4}>
-  //         <Typography variant="h5" gutterBottom>
-  //           Your Holdings
-  //         </Typography>
-  //         {holdings.map((val, index) => (
-  //           HoldingCard(val.symbol, val.amount, val.boughtFor)
-  //         ))}
-  //       </Grid>
-  
-  //       {/* Transactions Column */}
-  //       <Grid item xs={12} md={4}>
-  //         <Typography variant="h5" gutterBottom>
-  //           Recent Transactions
-  //         </Typography>
-  //         {transactions.map((val, index) => (
-  //           TransactionCard(val.symbol,val.buysell, val.amount, val.profit)
-  //         ))}
-  //       </Grid>
-  //     </Grid>
-  //   </Box>
-  // )
   return (
     <Box sx={{ 
       padding: 4,
