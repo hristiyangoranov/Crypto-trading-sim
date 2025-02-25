@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 
-export default function TransactionCard(symbol, buysell, amount, profit){
+export default function HoldingCard (symbol, amount, currprice){
     return (
       <Box sx={{
           background: 'linear-gradient(145deg, ghostwhite 0%, #f8f8ff 100%)',
@@ -46,13 +46,6 @@ export default function TransactionCard(symbol, buysell, amount, profit){
               mt: 1,
               textTransform: 'uppercase'
           }}>
-              {buysell==true?"buy":"sell"}
-          </Typography>
-          <Typography variant='h6' sx={{ 
-              color: "black",
-              fontWeight: 600,
-              fontFamily: 'monospace'
-          }}>
               Amount: {amount}
           </Typography>
           <Typography variant='h6' sx={{ 
@@ -60,7 +53,7 @@ export default function TransactionCard(symbol, buysell, amount, profit){
               fontWeight: 600,
               fontFamily: 'monospace'
           }}>
-             {buysell==false ? (profit>0 ? <Typography color='green'>{profit.toFixed(2)}</Typography> : <Typography color='red'>{profit.toFixed(2)}</Typography>):<Typography></Typography>}
+              Bought at: {currprice}
           </Typography>
       </Box>
     );

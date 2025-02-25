@@ -32,6 +32,7 @@ public class Service {
             //set new balance
             balance=balance-amount*currprice;
         }
+        //return not enough money
     }
 
     public static void SellCrypto(String symbol, double currprice, double amount){
@@ -54,7 +55,11 @@ public class Service {
                 }
                 break;
             }
+            //you dont have that much crypto to sell
         }
+        // dont have the crypto
+
+
     }
 
     public static double getBalance(){
