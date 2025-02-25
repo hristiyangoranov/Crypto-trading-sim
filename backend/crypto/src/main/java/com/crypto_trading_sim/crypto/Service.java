@@ -6,18 +6,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Service {
     private static double balance=10000.00;
-        private static List<Holding> holdings = new CopyOnWriteArrayList<>();
-            private static List<Transaction> transactions = new CopyOnWriteArrayList<>();
-                    
-                        public static void BuyCrypto(String symbol, double currprice, double amount){
-                            if(balance>=amount*currprice){
-                            Transaction tempTransacion=new Transaction(symbol,false, currprice*amount, amount);
-                            transactions.addLast(tempTransacion);
+    private static List<Holding> holdings = new CopyOnWriteArrayList<>();
+    private static List<Transaction> transactions = new CopyOnWriteArrayList<>();   
+
+    public static void BuyCrypto(String symbol, double currprice, double amount){
+        if(balance>=amount*currprice){
+            Transaction tempTransacion=new Transaction(symbol,true, currprice*amount, amount, 0);
+            transactions.addLast(tempTransacion);
         
-                    //check if user already has the given crypto
-                    Boolean alreadyBought=false;
-                    for (Holding holding : holdings) {
-                if(holding.getSymbol()==symbol){
+            //check if user already has the given crypto
+            Boolean alreadyBought=false;
+            for (Holding holding : holdings) {
+                if(holding.getSymbol().equalsIgnoreCase(symbol)){
                     alreadyBought=true;
                     holding.setAmount(holding.getAmount()+amount);
                     break;
@@ -39,7 +39,7 @@ public class Service {
         //check if the user has the crypto
         for (Holding holding : holdings) {
             if(holding.getAmount()>=amount){
-                Transaction tempTransacion=new Transaction(symbol, true, currprice, amount);
+                Transaction tempTransacion=new Transaction(symbol, false, currprice, amount, );
                 transactions.addLast(tempTransacion);
 
                 //update balance

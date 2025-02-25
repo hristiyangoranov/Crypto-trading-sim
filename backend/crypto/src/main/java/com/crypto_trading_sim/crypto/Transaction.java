@@ -5,12 +5,14 @@ public class Transaction {
     private Boolean buysell;
     private double price;
     private double amount;
+    private double profit;
 
-    public Transaction(String symbol, Boolean buysell, double price, double amount){
+    public Transaction(String symbol, Boolean buysell, double price, double amount,double profit){
         this.symbol=symbol;
         this.buysell=buysell;
         this.price=price;
         this.amount=amount;
+        this.profit=profit;
     }
 
     public String getSymbol(){
@@ -27,5 +29,9 @@ public class Transaction {
 
     public double getAmount(){
         return this.amount;
+    }
+
+    public double getProfit(){
+        return this.profit;
     }
 }
