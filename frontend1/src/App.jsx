@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import getBalance from './getBalance';
-import getHoldings from './getHoldings';
-import getTransactions from './getTransactions';
-import CryptoBox from './CryptoBox';
+import CryptoBox from './components/CryptoBox';
 import { Box, Grid, Typography, Button, TextField, Collapse, IconButton } from '@mui/material';
-import TransactionCard from './TransactionCard';
-import HoldingCard from './HoldingCard';
+import TransactionCard from './components/TransactionCard';
+import HoldingCard from './components/HoldingCard';
 import { ExpandMore, ExpandLess, AttachMoney, TrendingUp, TrendingDown, AccountBalanceWallet } from '@mui/icons-material';
+import ResetButton from './components/ResetButton';
+import fetchData from './utils/fetchData';
 
 class Crypto{
   constructor(symbol, price){
@@ -17,8 +16,6 @@ class Crypto{
 }
 
 function App() {
-
-  
   const [top20Cryptos, setTop20Cryptos]=useState([]);
   const [balance, setBalance]=useState(1);
   const [holdings, setHoldings]=useState([]);
@@ -72,28 +69,15 @@ function App() {
             val.symbol === update.symbol ? update : val
           );
         });
-        //console.log(`Price for ${update.symbol} is now ${update.price}`);
       }
     })
 
-    fetchData();
+    fetchData(setBalance, setHoldings, setTransactions);
 
   },[])
 
-  const fetchData = async ()=>{
-    const balanceData = await getBalance();
-    const holdingsData = await getHoldings();
-    const transactionsData = await getTransactions();
-
-    setBalance(balanceData);
-    setHoldings(holdingsData || []);  // Ensure array fallback
-    setTransactions(transactionsData || []);
-  }
-
   useEffect(()=>{
   },[top20Cryptos, balance, holdings, transactions])
-
-
 
   function TradeButton(buysell) {
     const [showInputs, setShowInputs] = useState(false);
@@ -147,7 +131,8 @@ function App() {
       if(!response.ok){
         alert(result);
       }
-      fetchData();
+
+      fetchData(setBalance, setHoldings, setTransactions);
     };
   
     const buttonColor = buysell === "buy" ? "success" : "error";
@@ -271,7 +256,6 @@ function App() {
             Portfolio Value
           </Typography>
         </Box>
-
         <Box sx={{ 
           display: 'flex',
           gap: 3,
@@ -281,8 +265,8 @@ function App() {
         }}>
           {TradeButton("buy")}
           {TradeButton("sell")}
+          {ResetButton(setBalance, setHoldings, setTransactions)}
         </Box>
-
         <Grid container spacing={4}>
           {/* Cryptocurrencies Column */}
           <Grid item xs={12} md={4}>

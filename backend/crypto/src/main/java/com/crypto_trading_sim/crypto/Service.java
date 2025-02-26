@@ -85,4 +85,9 @@ public class Service {
         return Service.transactions;
     }
 
+    public static void reset(){
+        balance=10000.00;
+        holdings.clear();
+        transactions.clear();
+    }
 }
